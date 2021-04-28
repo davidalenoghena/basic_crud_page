@@ -45,24 +45,27 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                     <?php
                     // Include config file
                     require_once "config.php";
-                    
+                    $user_id = $_SESSION["id"];
+
                     // Attempt select query execution
-                    $sql = "SELECT * FROM courses WHERE id=session_id()";
+                    $sql = "SELECT * FROM courses WHERE user_id=$user_id";
                     if($result = mysqli_query($link, $sql)){
                         if(mysqli_num_rows($result) > 0){
                             echo '<table class="table table-bordered table-striped">';
                                 echo "<thead>";
                                     echo "<tr>";
                                         echo "<th>#</th>";
-                                        echo "<th>Name</th>";
+                                        echo "<th>Lecturer</th>";
                                         echo "<th>Course</th>";
                                         echo "<th>Date Created</th>";
+                                        echo "<th>Action</th>";
                                     echo "</tr>";
                                 echo "</thead>";
                                 echo "<tbody>";
                                 while($row = mysqli_fetch_array($result)){
                                     echo "<tr>";
                                         echo "<td>" . $row['id'] . "</td>";
+                                        echo "<td>" . $row['lecturer'] . "</td>";
                                         echo "<td>" . $row['course_title'] . "</td>";
                                         echo "<td>" . $row['created_at'] . "</td>";
                                         echo "<td>";

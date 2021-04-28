@@ -12,8 +12,8 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 require_once "config.php";
  
 // Define variables and initialize with empty values
-$name = $user_id = $course_title = "";
-$name_err = $user_id_err = $course_title_err = "";
+$lecturer = $user_id = $course_title = "";
+$lecturer_err = $user_id_err = $course_title_err = "";
  
 // Processing form data when form is submitted
 if(isset($_POST["id"]) && !empty($_POST["id"])){
@@ -21,13 +21,13 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
     $id = $_POST["id"];
     
     // Validate name
-    $input_name = trim($_POST["name"]);
-    if(empty($input_name)){
-        $name_err = "Please enter a name.";
+    $input_lecturer = trim($_POST["lecturer"]);
+    if(empty($input_lecturer)){
+        $lecturer_err = "Please enter lecturer's name.";
     } elseif(!filter_var($input_name, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z\s]+$/")))){
-        $name_err = "Please enter a valid name.";
+        $lecturer_err = "Please enter a valid name.";
     } else{
-        $name = $input_name;
+        $lecturer = $input_lecturer;
     }
     
     // Validate course title
@@ -53,10 +53,10 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
          
         if($stmt = mysqli_prepare($link, $sql)){
             // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "sss", $param_name, $param_user_id, $param_course_title);
+            mysqli_stmt_bind_param($stmt, "sis", $param_name, $param_user_id, $param_course_title);
             
             // Set parameters
-            $param_name = $name;
+            $param_lecturer = $lecturer;
             $param_user_id = $user_id;
             $param_course_title = $course_title;
             
@@ -101,7 +101,7 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
                     $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
                     
                     // Retrieve individual field value
-                    $name = $row["name"];
+                    $lecturer = $row["lecturer"];
                     $course_title = $row["course_title"];
                     $created_at = $row["created_at"];
                 } else{
@@ -149,9 +149,9 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
                     <h2 class="mt-5">Update Course</h2>
                     <form action="<?php echo htmlspecialchars(basename($_SERVER['REQUEST_URI'])); ?>" method="post">
                         <div class="form-group">
-                            <label>Name</label>
-                            <input type="text" name="name" class="form-control <?php echo (!empty($name_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $name; ?>">
-                            <span class="invalid-feedback"><?php echo $name_err;?></span>
+                            <label>Lecturer</label>
+                            <input type="text" name="lecturer" class="form-control <?php echo (!empty($lecturer_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $lecturer; ?>">
+                            <span class="invalid-feedback"><?php echo $lecturer_err;?></span>
                         </div>
                         <div class="form-group">
                             <label>Course</label>

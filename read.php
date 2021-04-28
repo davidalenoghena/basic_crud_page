@@ -33,7 +33,7 @@ if(isset($_GET["id"]) && !empty(trim($_GET["id"]))){
                 $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
                 
                 // Retrieve individual field value
-                $name = $row["name"];
+                $lecturer = $row["lecturer"];
                 $course_title = $row["course_title"];
                 $created_at = $row["created_at"];
             } else{
@@ -54,7 +54,7 @@ if(isset($_GET["id"]) && !empty(trim($_GET["id"]))){
     mysqli_close($link);
 } else{
     // URL doesn't contain id parameter. Redirect to error page
-    header("location: error.php");
+    header("location: 404.php");
     exit();
 }
 ?>
@@ -79,8 +79,8 @@ if(isset($_GET["id"]) && !empty(trim($_GET["id"]))){
                 <div class="col-md-12">
                     <h1 class="mt-5 mb-3">View Courses</h1>
                     <div class="form-group">
-                        <label>Name</label>
-                        <p><b><?php echo $row["name"]; ?></b></p>
+                        <label>Lecturer</label>
+                        <p><b><?php echo $row["lecturer"]; ?></b></p>
                     </div>
                     <div class="form-group">
                         <label>Course Title</label>
