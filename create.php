@@ -1,10 +1,19 @@
 <?php
+// Initialize the session
+session_start();
+ 
+// Check if the user is logged in, if not then redirect him to login page
+if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+    header("location: login_page.php");
+    exit;
+}
+
 // Include config file
 require_once "config.php";
  
 // Define variables and initialize with empty values
-$name = $address = $salary = "";
-$name_err = $address_err = $salary_err = "";
+$name = $user_id = $course_title = "";
+$name_err = $user_id_err = $course_title_err = "";
  
 // Processing form data when form is submitted
 if($_SERVER["REQUEST_METHOD"] == "POST"){
@@ -18,42 +27,40 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $name = $input_name;
     }
     
-    // Validate address
-    $input_address = trim($_POST["address"]);
-    if(empty($input_address)){
-        $address_err = "Please enter an address.";     
+    // Validate course title
+    $input_course_title = trim($_POST["course_title"]);
+    if(empty($input_course_title)){
+        $course_title_err = "Please enter the course's title.";     
     } else{
-        $address = $input_address;
+        $course_title = $input_course_title;
     }
     
-    // Validate salary
-    $input_salary = trim($_POST["salary"]);
-    if(empty($input_salary)){
-        $salary_err = "Please enter the salary amount.";     
-    } elseif(!ctype_digit($input_salary)){
-        $salary_err = "Please enter a positive integer value.";
+    // Validate user_id
+    $input_user_id = trim($_SESSION["id"]);
+    if(empty($input_user_id)){
+        $user_id_err = "Not logged in";     
     } else{
-        $salary = $input_salary;
+        $user_id = $input_user_id;
     }
     
     // Check input errors before inserting in database
-    if(empty($name_err) && empty($address_err) && empty($salary_err)){
+    if(empty($name_err) && empty($course_title_err) && empty($user_id_err)){
         // Prepare an insert statement
-        $sql = "INSERT INTO employees (name, address, salary) VALUES (?, ?, ?)";
+        $sql = "INSERT INTO courses (name, user_id, course_title) VALUES (?, ?, ?)";
          
         if($stmt = mysqli_prepare($link, $sql)){
             // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "sss", $param_name, $param_address, $param_salary);
+            mysqli_stmt_bind_param($stmt, "sss", $param_name, $param_user_id, $param_course_title);
             
             // Set parameters
             $param_name = $name;
-            $param_address = $address;
-            $param_salary = $salary;
+            $param_user_id = $user_id;
+            $param_course_title = $course_title;
             
             // Attempt to execute the prepared statement
             if(mysqli_stmt_execute($stmt)){
                 // Records created successfully. Redirect to landing page
-                header("location: index.php");
+                header("location: welcome_page.php");
                 exit();
             } else{
                 echo "Oops! Something went wrong. Please try again later.";
@@ -87,8 +94,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12">
-                    <h2 class="mt-5">Create Record</h2>
-                    <p>Please fill this form and submit to add employee record to the database.</p>
+                    <h2 class="mt-5">Create Course</h2>
                     <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                         <div class="form-group">
                             <label>Name</label>
@@ -96,17 +102,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                             <span class="invalid-feedback"><?php echo $name_err;?></span>
                         </div>
                         <div class="form-group">
-                            <label>Address</label>
-                            <textarea name="address" class="form-control <?php echo (!empty($address_err)) ? 'is-invalid' : ''; ?>"><?php echo $address; ?></textarea>
-                            <span class="invalid-feedback"><?php echo $address_err;?></span>
-                        </div>
-                        <div class="form-group">
-                            <label>Salary</label>
-                            <input type="text" name="salary" class="form-control <?php echo (!empty($salary_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $salary; ?>">
-                            <span class="invalid-feedback"><?php echo $salary_err;?></span>
+                            <label>Course Title</label>
+                            <textarea name="course_title" class="form-control <?php echo (!empty($course_title_err)) ? 'is-invalid' : ''; ?>"><?php echo $course_title; ?></textarea>
+                            <span class="invalid-feedback"><?php echo $course_title_err;?></span>
                         </div>
                         <input type="submit" class="btn btn-primary" value="Submit">
-                        <a href="index.php" class="btn btn-secondary ml-2">Cancel</a>
+                        <a href="welcome_page.php" class="btn btn-secondary ml-2">Cancel</a>
                     </form>
                 </div>
             </div>        

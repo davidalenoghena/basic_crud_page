@@ -23,6 +23,7 @@
 
     $sql = "CREATE TABLE courses(
         id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+        user_id INT(10) NOT NULL UNIQUE, 
         course_title VARCHAR(50) NOT NULL,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )";    

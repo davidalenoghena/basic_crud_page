@@ -1,11 +1,20 @@
 <?php
+// Initialize the session
+session_start();
+ 
+// Check if the user is logged in, if not then redirect him to login page
+if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+    header("location: login_page.php");
+    exit;
+}
+
 // Check existence of id parameter before processing further
 if(isset($_GET["id"]) && !empty(trim($_GET["id"]))){
     // Include config file
     require_once "config.php";
     
     // Prepare a select statement
-    $sql = "SELECT * FROM employees WHERE id = ?";
+    $sql = "SELECT * FROM courses WHERE id = ?";
     
     if($stmt = mysqli_prepare($link, $sql)){
         // Bind variables to the prepared statement as parameters
@@ -25,11 +34,11 @@ if(isset($_GET["id"]) && !empty(trim($_GET["id"]))){
                 
                 // Retrieve individual field value
                 $name = $row["name"];
-                $address = $row["address"];
-                $salary = $row["salary"];
+                $course_title = $row["course_title"];
+                $created_at = $row["created_at"];
             } else{
                 // URL doesn't contain valid id parameter. Redirect to error page
-                header("location: error.php");
+                header("location: 404.php");
                 exit();
             }
             
@@ -54,7 +63,7 @@ if(isset($_GET["id"]) && !empty(trim($_GET["id"]))){
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>View Record</title>
+    <title>View Course</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         .wrapper{
@@ -68,20 +77,20 @@ if(isset($_GET["id"]) && !empty(trim($_GET["id"]))){
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12">
-                    <h1 class="mt-5 mb-3">View Record</h1>
+                    <h1 class="mt-5 mb-3">View Courses</h1>
                     <div class="form-group">
                         <label>Name</label>
                         <p><b><?php echo $row["name"]; ?></b></p>
                     </div>
                     <div class="form-group">
-                        <label>Address</label>
-                        <p><b><?php echo $row["address"]; ?></b></p>
+                        <label>Course Title</label>
+                        <p><b><?php echo $row["course_title"]; ?></b></p>
                     </div>
                     <div class="form-group">
-                        <label>Salary</label>
-                        <p><b><?php echo $row["salary"]; ?></b></p>
+                        <label>Date Created</label>
+                        <p><b><?php echo $row["created_at"]; ?></b></p>
                     </div>
-                    <p><a href="index.php" class="btn btn-primary">Back</a></p>
+                    <p><a href="welcome_page.php" class="btn btn-primary">Back</a></p>
                 </div>
             </div>        
         </div>
