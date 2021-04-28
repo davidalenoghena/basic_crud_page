@@ -30,11 +30,18 @@
                 <div class="col-md-12">
                     <div class="mt-5 mb-3 clearfix">
                         <h2 class="pull-left">Welcome Visitor</h2>
-                        <a href="files/register_page.php" class="btn btn-success pull-right"><i class="fa fa-plus"></i> Register</a>
+                        <h2 class="pull-left">Create a database called 'zuri_crud' then 
+                        <a href="files/create_table.php" class="btn btn-danger"><i></i> Create Tables in MySQL</a></h2>
                         <br>
                         <br>
                         <br>
-                        <a href="files/login_page.php" class="btn btn-success pull-right"><i class="fa fa-plus"></i> Login</a>
+                        <br/>
+                        <p>If you've already created the database and tables:</p>
+                        <a href="files/register_page.php" class="btn btn-success"><i class="fa fa-plus"></i> Register</a>
+                        <br>
+                        <br>
+                        <br>
+                        <a href="files/login_page.php" class="btn btn-success"><i class="fa fa-plus"></i> Login</a>
                     </div>
                 </div>
             </div>        
