@@ -2,7 +2,7 @@
 session_start();
  
 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
-    header("location: register_page.php");
+    header("location: welcome_page.php");
     exit;
 }
  
