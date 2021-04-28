@@ -12,8 +12,8 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 require_once "config.php";
  
 // Define variables and initialize with empty values
-$lecturer = $user_id = $course_title = "";
-$lecturer_err = $user_id_err = $course_title_err = "";
+$lecturer = $course_title = "";
+$lecturer_err = $course_title_err = "";
  
 // Processing form data when form is submitted
 if(isset($_POST["id"]) && !empty($_POST["id"])){
@@ -24,7 +24,7 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
     $input_lecturer = trim($_POST["lecturer"]);
     if(empty($input_lecturer)){
         $lecturer_err = "Please enter lecturer's name.";
-    } elseif(!filter_var($input_name, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z\s]+$/")))){
+    } elseif(!filter_var($input_lecturer, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z\s]+$/")))){
         $lecturer_err = "Please enter a valid name.";
     } else{
         $lecturer = $input_lecturer;
@@ -38,27 +38,20 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
         $course_title = $input_course_title;
     }
     
-    // Validate user_id
-    $input_user_id = trim($_SESSION["id"]);
-    if(empty($input_user_id)){
-        $user_id_err = "Not logged in";     
-    } else{
-        $user_id = $input_user_id;
-    }
-    
     // Check input errors before inserting in database
-    if(empty($name_err) && empty($course_title_err) && empty($user_id_err)){
+    if(empty($lecturer_err) && empty($course_title_err)){
         // Prepare an update statement
-        $sql = "UPDATE courses SET name=?, course_title=?, user_id=? WHERE id=?";
+        $id =  trim($_GET["id"]);
+        $sql = "UPDATE courses SET lecturer=?, course_title=? WHERE id=?";
          
         if($stmt = mysqli_prepare($link, $sql)){
             // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "sis", $param_name, $param_user_id, $param_course_title);
+            mysqli_stmt_bind_param($stmt, "ssi", $param_lecturer, $param_course_title, $param_id);
             
             // Set parameters
             $param_lecturer = $lecturer;
-            $param_user_id = $user_id;
             $param_course_title = $course_title;
+            $param_id = $id;
             
             // Attempt to execute the prepared statement
             if(mysqli_stmt_execute($stmt)){
@@ -103,7 +96,6 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
                     // Retrieve individual field value
                     $lecturer = $row["lecturer"];
                     $course_title = $row["course_title"];
-                    $created_at = $row["created_at"];
                 } else{
                     // URL doesn't contain valid id. Redirect to error page
                     header("location: 404.php");
@@ -155,13 +147,8 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
                         </div>
                         <div class="form-group">
                             <label>Course</label>
-                            <textarea name="address" class="form-control <?php echo (!empty($course_title_err)) ? 'is-invalid' : ''; ?>"><?php echo $course_title; ?></textarea>
-                            <span class="invalid-feedback"><?php echo $address_err;?></span>
-                        </div>
-                        <div class="form-group">
-                            <label>Date Created</label>
-                            <input type="text" name="created_at" class="form-control <?php echo (!empty($created_at_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $created_at; ?>">
-                            <span class="invalid-feedback"><?php echo $created_at_err;?></span>
+                            <textarea name="course_title" class="form-control <?php echo (!empty($course_title_err)) ? 'is-invalid' : ''; ?>"><?php echo $course_title; ?></textarea>
+                            <span class="invalid-feedback"><?php echo $course_title_err;?></span>
                         </div>
                         <input type="hidden" name="id" value="<?php echo $id; ?>"/>
                         <input type="submit" class="btn btn-primary" value="Submit">
