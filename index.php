@@ -30,7 +30,7 @@
                 <div class="col-md-12">
                     <div class="mt-5 mb-3 clearfix">
                         <h2 class="pull-left">Welcome Visitor</h2>
-                        <h2 class="pull-left">Create a database called 'zuri_crud' then 
+                        <h2 class="pull-left">Create a database in MySQL called 'zuri_crud' then 
                         <a href="files/create_table.php" class="btn btn-danger"><i></i> Create Tables in MySQL</a></h2>
                         <br>
                         <br>
